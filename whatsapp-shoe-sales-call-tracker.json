@@ -1,0 +1,537 @@
+{
+  "name": "WhatsApp Wholesale Shoe Sales Call Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Setup checklist\n1. **WhatsApp Trigger** – connect your WhatsApp Business Cloud API credential (needs `messages` webhook subscription).\n2. **HTTP Request nodes (media)** – connect an HTTP Header Auth credential with `Authorization: Bearer <your WhatsApp permanent access token>`.\n3. **OpenAI nodes** – connect your OpenAI credential (used for voice-note transcription + extracting the client's requirement/interest as structured data).\n4. **Google Sheets nodes** – connect your Google Sheets credential and point all 3 Sheets nodes at ONE spreadsheet with two tabs:\n   - `Sales Call Log` columns: Date | Time | Client Name | Phone Number | Location | Sequence No | Message Type | Message | Product Interest | Quantity/Requirement | Interest Level | Follow-up Needed | Summary | WA Message ID\n   - `Client Master` columns: Phone Number | Client Name | Location | Last Contact Date | Last Product Interest | Interest Level | Status\n5. **Gmail node** – set the \"To\" address to wherever you want hot-lead alerts sent (defaults to your email, change as needed).\n6. Send yourself a test WhatsApp message, then open each node's output once to confirm field names match the live payload (Meta tweaks these occasionally) before going live.",
+        "height": 460,
+        "width": 460
+      },
+      "id": "sticky-setup",
+      "name": "Setup Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-680, -420]
+    },
+    {
+      "parameters": {
+        "content": "## How the \"sequence\" works\nEach message from a client is looked up against the `Sales Call Log` tab (filtered by phone number) to count how many calls/messages already exist for them, then stamps the new row with the next Sequence No. Combined with Date/Time, this gives you a full chronological history per client.\n\nAdd this formula to `Client Master!<TotalCalls column>` if you want a live running total instead of trusting n8n:\n`=COUNTIF('Sales Call Log'!D:D, A2)` (assuming Phone Number is column D in the log and column A in Client Master).",
+        "height": 300,
+        "width": 400
+      },
+      "id": "sticky-sequence",
+      "name": "Sequence Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [560, -420]
+    },
+    {
+      "parameters": {
+        "updates": ["messages"]
+      },
+      "id": "node-trigger",
+      "name": "WhatsApp Trigger",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [-680, 0],
+      "webhookId": "whatsapp-sales-tracker",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "REPLACE_ME",
+          "name": "WhatsApp Business Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "text",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "audio",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "location",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "fallbackOutput": 3,
+        "options": {}
+      },
+      "id": "node-switch",
+      "name": "Route by Message Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [-440, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "phoneNumber", "type": "string", "value": "={{ $json.from }}" },
+            { "id": "2", "name": "clientName", "type": "string", "value": "={{ $json.contacts?.[0]?.profile?.name || $json.from }}" },
+            { "id": "3", "name": "waMessageId", "type": "string", "value": "={{ $json.id }}" },
+            { "id": "4", "name": "waTimestampUnix", "type": "string", "value": "={{ $json.timestamp }}" },
+            { "id": "5", "name": "messageType", "type": "string", "value": "text" },
+            { "id": "6", "name": "messageText", "type": "string", "value": "={{ $json.text.body }}" },
+            { "id": "7", "name": "sharedLocation", "type": "string", "value": "" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-prep-text",
+      "name": "Prepare Text Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-200, -200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "phoneNumber", "type": "string", "value": "={{ $json.from }}" },
+            { "id": "2", "name": "clientName", "type": "string", "value": "={{ $json.contacts?.[0]?.profile?.name || $json.from }}" },
+            { "id": "3", "name": "waMessageId", "type": "string", "value": "={{ $json.id }}" },
+            { "id": "4", "name": "waTimestampUnix", "type": "string", "value": "={{ $json.timestamp }}" },
+            { "id": "5", "name": "mediaId", "type": "string", "value": "={{ $json.audio.id }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-prep-audio-meta",
+      "name": "Stash Audio Metadata",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-200, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.facebook.com/v20.0/{{ $json.mediaId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "node-get-media-url",
+      "name": "Get Media Info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [40, 0],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "WhatsApp Graph API token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": { "response": { "response": { "responseFormat": "file" } } }
+      },
+      "id": "node-download-audio",
+      "name": "Download Voice Note",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 0],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE_ME",
+          "name": "WhatsApp Graph API token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "node-transcribe",
+      "name": "Transcribe Voice Note",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.8,
+      "position": [520, 0],
+      "credentials": {
+        "openAiApi": {
+          "id": "REPLACE_ME",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "phoneNumber", "type": "string", "value": "={{ $('Stash Audio Metadata').item.json.phoneNumber }}" },
+            { "id": "2", "name": "clientName", "type": "string", "value": "={{ $('Stash Audio Metadata').item.json.clientName }}" },
+            { "id": "3", "name": "waMessageId", "type": "string", "value": "={{ $('Stash Audio Metadata').item.json.waMessageId }}" },
+            { "id": "4", "name": "waTimestampUnix", "type": "string", "value": "={{ $('Stash Audio Metadata').item.json.waTimestampUnix }}" },
+            { "id": "5", "name": "messageType", "type": "string", "value": "voice note" },
+            { "id": "6", "name": "messageText", "type": "string", "value": "={{ $json.text }}" },
+            { "id": "7", "name": "sharedLocation", "type": "string", "value": "" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-prep-voice",
+      "name": "Prepare Voice Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [760, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "phoneNumber", "type": "string", "value": "={{ $json.from }}" },
+            { "id": "2", "name": "clientName", "type": "string", "value": "={{ $json.contacts?.[0]?.profile?.name || $json.from }}" },
+            { "id": "3", "name": "waMessageId", "type": "string", "value": "={{ $json.id }}" },
+            { "id": "4", "name": "waTimestampUnix", "type": "string", "value": "={{ $json.timestamp }}" },
+            { "id": "5", "name": "messageType", "type": "string", "value": "location share" },
+            { "id": "6", "name": "messageText", "type": "string", "value": "=Client shared a location pin: {{ $json.location.address || ($json.location.latitude + ',' + $json.location.longitude) }}" },
+            { "id": "7", "name": "sharedLocation", "type": "string", "value": "={{ $json.location.address || ($json.location.latitude + ',' + $json.location.longitude) }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-prep-location",
+      "name": "Prepare Location Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-200, 200]
+    },
+    {
+      "parameters": {},
+      "id": "node-ignore-other",
+      "name": "Ignore Other Updates",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [-200, 400]
+    },
+    {
+      "parameters": {
+        "mode": "append",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "id": "node-merge",
+      "name": "Merge Message Sources",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [1000, -100]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "1", "name": "phoneNumber", "type": "string", "value": "={{ $json.phoneNumber }}" },
+            { "id": "2", "name": "clientName", "type": "string", "value": "={{ $json.clientName }}" },
+            { "id": "3", "name": "waMessageId", "type": "string", "value": "={{ $json.waMessageId }}" },
+            { "id": "4", "name": "messageType", "type": "string", "value": "={{ $json.messageType }}" },
+            { "id": "5", "name": "messageText", "type": "string", "value": "={{ $json.messageText }}" },
+            { "id": "6", "name": "sharedLocation", "type": "string", "value": "={{ $json.sharedLocation }}" },
+            { "id": "7", "name": "dateISO", "type": "string", "value": "={{ DateTime.fromSeconds(Number($json.waTimestampUnix)).toFormat('yyyy-LL-dd') }}" },
+            { "id": "8", "name": "timeHM", "type": "string", "value": "={{ DateTime.fromSeconds(Number($json.waTimestampUnix)).toFormat('HH:mm:ss') }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-normalize",
+      "name": "Normalize Common Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1240, -100]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "documentId": { "__rl": true, "mode": "list", "value": "REPLACE_ME_SPREADSHEET_ID" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Sales Call Log" },
+        "filtersUI": {
+          "values": [
+            { "lookupColumn": "Phone Number", "lookupValue": "={{ $json.phoneNumber }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-count-calls",
+      "name": "Count Previous Calls",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1480, -100],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const previousCalls = $input.all().length;\nconst current = $('Normalize Common Fields').first().json;\n\nreturn [{\n  json: {\n    ...current,\n    sequenceNumber: previousCalls + 1\n  }\n}];"
+      },
+      "id": "node-sequence",
+      "name": "Compute Sequence Number",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1720, -100]
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": { "__rl": true, "mode": "list", "value": "gpt-4o-mini" },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You help a wholesale shoe seller log WhatsApp sales conversations. From the client's message, extract strict JSON with these keys only: product_interest (shoe type/model/brand mentioned, or \"unspecified\"), quantity (requirement like pairs/cartons, or \"unspecified\"), location (city/area mentioned in the text, or \"unspecified\"), interest_level (\"High\", \"Medium\", or \"Low\"), follow_up_needed (\"Yes\" or \"No\"), summary (one short sentence). Respond with ONLY the JSON object, no markdown."
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.messageText }}"
+            }
+          ]
+        },
+        "options": { "responseFormat": "json_object" }
+      },
+      "id": "node-ai-extract",
+      "name": "Extract Sales Details (AI)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.8,
+      "position": [1960, -100],
+      "credentials": {
+        "openAiApi": {
+          "id": "REPLACE_ME",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const source = $('Compute Sequence Number').item.json;\n\nlet parsed = {};\ntry {\n  const raw = $json.message?.content ?? $json.content ?? $json.text ?? '{}';\n  parsed = JSON.parse(raw);\n} catch (e) {\n  parsed = {};\n}\n\nreturn {\n  json: {\n    ...source,\n    productInterest: parsed.product_interest || 'unspecified',\n    quantity: parsed.quantity || 'unspecified',\n    location: source.sharedLocation || parsed.location || 'unspecified',\n    interestLevel: parsed.interest_level || 'Low',\n    followUpNeeded: parsed.follow_up_needed || 'No',\n    summary: parsed.summary || source.messageText\n  }\n};"
+      },
+      "id": "node-parse-ai",
+      "name": "Parse AI Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2200, -100]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "mode": "list", "value": "REPLACE_ME_SPREADSHEET_ID" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Sales Call Log" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.dateISO }}",
+            "Time": "={{ $json.timeHM }}",
+            "Client Name": "={{ $json.clientName }}",
+            "Phone Number": "={{ $json.phoneNumber }}",
+            "Location": "={{ $json.location }}",
+            "Sequence No": "={{ $json.sequenceNumber }}",
+            "Message Type": "={{ $json.messageType }}",
+            "Message": "={{ $json.messageText }}",
+            "Product Interest": "={{ $json.productInterest }}",
+            "Quantity/Requirement": "={{ $json.quantity }}",
+            "Interest Level": "={{ $json.interestLevel }}",
+            "Follow-up Needed": "={{ $json.followUpNeeded }}",
+            "Summary": "={{ $json.summary }}",
+            "WA Message ID": "={{ $json.waMessageId }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "node-append-log",
+      "name": "Append to Sales Call Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [2440, -100],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "list", "value": "REPLACE_ME_SPREADSHEET_ID" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Client Master" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": ["Phone Number"],
+          "value": {
+            "Phone Number": "={{ $json.phoneNumber }}",
+            "Client Name": "={{ $json.clientName }}",
+            "Location": "={{ $json.location }}",
+            "Last Contact Date": "={{ $json.dateISO }}",
+            "Last Product Interest": "={{ $json.productInterest }}",
+            "Interest Level": "={{ $json.interestLevel }}",
+            "Status": "={{ $json.interestLevel === 'High' ? 'Hot Lead' : ($json.followUpNeeded === 'Yes' ? 'Needs Follow-up' : 'Contacted') }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "node-upsert-client",
+      "name": "Upsert Client Master",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [2680, -100],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_ME",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.interestLevel }}",
+              "rightValue": "High",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-if-high",
+      "name": "Is High Interest?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2920, -100]
+    },
+    {
+      "parameters": {
+        "sendTo": "003macid@gmail.com",
+        "subject": "=Hot Lead: {{ $json.clientName }} wants {{ $json.productInterest }}",
+        "message": "=New high-interest WhatsApp sales call logged.\n\nClient: {{ $json.clientName }}\nPhone: {{ $json.phoneNumber }}\nLocation: {{ $json.location }}\nDate/Time: {{ $json.dateISO }} {{ $json.timeHM }}\nProduct Interest: {{ $json.productInterest }}\nQuantity/Requirement: {{ $json.quantity }}\nSummary: {{ $json.summary }}\nFollow-up needed: {{ $json.followUpNeeded }}\n\nThis is call/message #{{ $json.sequenceNumber }} logged for this client.",
+        "options": {}
+      },
+      "id": "node-notify",
+      "name": "Notify Sales Owner",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [3160, -220],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_ME",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [[{ "node": "Route by Message Type", "type": "main", "index": 0 }]]
+    },
+    "Route by Message Type": {
+      "main": [
+        [{ "node": "Prepare Text Message", "type": "main", "index": 0 }],
+        [{ "node": "Stash Audio Metadata", "type": "main", "index": 0 }],
+        [{ "node": "Prepare Location Message", "type": "main", "index": 0 }],
+        [{ "node": "Ignore Other Updates", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prepare Text Message": {
+      "main": [[{ "node": "Merge Message Sources", "type": "main", "index": 0 }]]
+    },
+    "Stash Audio Metadata": {
+      "main": [[{ "node": "Get Media Info", "type": "main", "index": 0 }]]
+    },
+    "Get Media Info": {
+      "main": [[{ "node": "Download Voice Note", "type": "main", "index": 0 }]]
+    },
+    "Download Voice Note": {
+      "main": [[{ "node": "Transcribe Voice Note", "type": "main", "index": 0 }]]
+    },
+    "Transcribe Voice Note": {
+      "main": [[{ "node": "Prepare Voice Message", "type": "main", "index": 0 }]]
+    },
+    "Prepare Voice Message": {
+      "main": [[{ "node": "Merge Message Sources", "type": "main", "index": 1 }]]
+    },
+    "Prepare Location Message": {
+      "main": [[{ "node": "Merge Message Sources", "type": "main", "index": 2 }]]
+    },
+    "Merge Message Sources": {
+      "main": [[{ "node": "Normalize Common Fields", "type": "main", "index": 0 }]]
+    },
+    "Normalize Common Fields": {
+      "main": [[{ "node": "Count Previous Calls", "type": "main", "index": 0 }]]
+    },
+    "Count Previous Calls": {
+      "main": [[{ "node": "Compute Sequence Number", "type": "main", "index": 0 }]]
+    },
+    "Compute Sequence Number": {
+      "main": [[{ "node": "Extract Sales Details (AI)", "type": "main", "index": 0 }]]
+    },
+    "Extract Sales Details (AI)": {
+      "main": [[{ "node": "Parse AI Output", "type": "main", "index": 0 }]]
+    },
+    "Parse AI Output": {
+      "main": [[{ "node": "Append to Sales Call Log", "type": "main", "index": 0 }]]
+    },
+    "Append to Sales Call Log": {
+      "main": [[{ "node": "Upsert Client Master", "type": "main", "index": 0 }]]
+    },
+    "Upsert Client Master": {
+      "main": [[{ "node": "Is High Interest?", "type": "main", "index": 0 }]]
+    },
+    "Is High Interest?": {
+      "main": [
+        [{ "node": "Notify Sales Owner", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
