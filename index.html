@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apex Riders MC &mdash; Ride Together. Ride Far.</title>
+<meta name="description" content="Apex Riders MC is a motorcycle riding brotherhood. Join as a permanent member or ride casual — brotherhood, adventure and the open road." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏍️</text></svg>" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div class="preloader" id="preloader">
+  <div class="preloader__wheel"></div>
+  <div class="preloader__text">APEX RIDERS</div>
+</div>
+
+<!-- ============ CURSOR ============ -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ============ GRAIN / VIGNETTE OVERLAY ============ -->
+<div class="grain"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#top" class="nav__logo">
+      <span class="nav__logo-icon">🏍️</span> APEX<span>RIDERS</span>
+    </a>
+    <nav class="nav__links" id="navLinks">
+      <a href="#about" data-nav>The Club</a>
+      <a href="#rides" data-nav>Ride Types</a>
+      <a href="#gallery" data-nav>Gallery</a>
+      <a href="#faq" data-nav>FAQ</a>
+      <a href="#join" class="nav__cta" data-nav>Join The Crew</a>
+    </nav>
+    <button class="nav__burger" id="navBurger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <canvas class="hero__particles" id="particleCanvas"></canvas>
+    <div class="hero__glow hero__glow--1"></div>
+    <div class="hero__glow hero__glow--2"></div>
+
+    <div class="hero__road">
+      <div class="hero__road-line"></div>
+      <div class="hero__road-line"></div>
+      <div class="hero__road-line"></div>
+    </div>
+
+    <svg class="hero__mountains" viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="#12141a" d="M0,224 L120,180 L260,240 L420,120 L600,220 L760,140 L920,230 L1100,160 L1260,220 L1440,180 L1440,320 L0,320 Z"></path>
+      <path fill="#0a0b0d" d="M0,280 L160,240 L340,290 L520,220 L700,270 L900,210 L1080,270 L1260,240 L1440,280 L1440,320 L0,320 Z"></path>
+    </svg>
+
+    <div class="hero__content">
+      <p class="hero__eyebrow reveal-up">EST. WHEREVER THE ROAD BEGINS</p>
+      <h1 class="hero__title">
+        <span class="reveal-line"><span>RIDE</span></span>
+        <span class="reveal-line"><span>TOGETHER.</span></span>
+        <span class="reveal-line"><span class="text-accent">RIDE FAR.</span></span>
+      </h1>
+      <p class="hero__subtitle reveal-up">
+        A brotherhood of riders bound by the open road, not the badge. Permanent members or weekend warriors &mdash;
+        if you ride, you belong.
+      </p>
+      <div class="hero__cta reveal-up">
+        <a href="#join" class="btn btn--primary magnetic">Join The Crew <span>&rarr;</span></a>
+        <a href="#about" class="btn btn--ghost magnetic">Our Story</a>
+      </div>
+    </div>
+
+    <div class="hero__bike" aria-hidden="true">
+      <svg viewBox="0 0 240 120" class="bike-svg" id="heroBike">
+        <g class="bike-svg__body" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M40 92 C 30 92 22 84 22 74 C 22 64 30 56 40 56 C 50 56 58 64 58 74 C 58 84 50 92 40 92 Z"/>
+          <path d="M182 92 C 172 92 164 84 164 74 C 164 64 172 56 182 56 C 192 56 200 64 200 74 C 200 84 192 92 182 92 Z"/>
+          <path d="M40 74 L 88 74 L 118 40 L 150 40" />
+          <path d="M88 74 L 116 74 L 140 56" />
+          <path d="M116 74 L 150 74 L 182 74" />
+          <path d="M140 56 L 160 56 L 150 40" />
+          <path d="M150 40 L 168 30" />
+          <path d="M116 74 L 104 50 L 88 50" fill="none"/>
+          <circle cx="40" cy="74" r="4" fill="currentColor" stroke="none"/>
+          <circle cx="182" cy="74" r="4" fill="currentColor" stroke="none"/>
+        </g>
+      </svg>
+    </div>
+
+    <a href="#about" class="hero__scroll" aria-label="Scroll down">
+      <span></span>
+    </a>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee">
+    <div class="marquee__track">
+      <span>RIDE HARD</span><span>•</span><span>RIDE SAFE</span><span>•</span><span>RIDE TOGETHER</span><span>•</span>
+      <span>NO ROAD TOO LONG</span><span>•</span><span>BROTHERHOOD ON TWO WHEELS</span><span>•</span>
+      <span>RIDE HARD</span><span>•</span><span>RIDE SAFE</span><span>•</span><span>RIDE TOGETHER</span><span>•</span>
+      <span>NO ROAD TOO LONG</span><span>•</span><span>BROTHERHOOD ON TWO WHEELS</span><span>•</span>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="section about" id="about">
+    <div class="container">
+      <p class="eyebrow reveal-up">THE CLUB</p>
+      <h2 class="section-title reveal-up">More Than A Ride. <span class="text-accent">A Brotherhood.</span></h2>
+      <p class="section-lead reveal-up">
+        Inspired by the world's great riding fraternities &mdash; the loyalty of the old-school MCs, the community
+        spirit of the big touring clubs, and the discipline of long-haul endurance riders &mdash; we built a home
+        for anyone who hears an engine and feels something.
+      </p>
+
+      <div class="pillars">
+        <div class="pillar-card reveal-up">
+          <div class="pillar-card__icon">🤝</div>
+          <h3>Brotherhood</h3>
+          <p>Riders looking out for riders. On the road and off it, you're never riding alone.</p>
+        </div>
+        <div class="pillar-card reveal-up">
+          <div class="pillar-card__icon">🧭</div>
+          <h3>Adventure</h3>
+          <p>Mountain passes, coastal highways, midnight city runs &mdash; if there's a road, we'll find it.</p>
+        </div>
+        <div class="pillar-card reveal-up">
+          <div class="pillar-card__icon">🛡️</div>
+          <h3>Discipline &amp; Safety</h3>
+          <p>Gear up, ride smart, look after the pack. Safety briefings before every group ride.</p>
+        </div>
+        <div class="pillar-card reveal-up">
+          <div class="pillar-card__icon">❤️</div>
+          <h3>Give Back</h3>
+          <p>Charity rides and community drives, the way the greatest riding groups in the world do it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats">
+    <div class="container stats__grid">
+      <div class="stat">
+        <span class="stat__num" data-count="500">0</span><span class="stat__suffix">+</span>
+        <p>Riders In The Pack</p>
+      </div>
+      <div class="stat">
+        <span class="stat__num" data-count="120">0</span><span class="stat__suffix">+</span>
+        <p>Group Rides Hosted</p>
+      </div>
+      <div class="stat">
+        <span class="stat__num" data-count="250000">0</span><span class="stat__suffix">km+</span>
+        <p>Ridden Together</p>
+      </div>
+      <div class="stat">
+        <span class="stat__num" data-count="15">0</span><span class="stat__suffix">+</span>
+        <p>States Covered</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RIDE TYPES ============ -->
+  <section class="section rides" id="rides">
+    <div class="container">
+      <p class="eyebrow reveal-up">HOW YOU RIDE</p>
+      <h2 class="section-title reveal-up">Two Ways In. <span class="text-accent">One Family.</span></h2>
+
+      <div class="membership-grid">
+        <div class="membership-card reveal-up">
+          <span class="membership-card__tag">FOR THE COMMITTED</span>
+          <h3>Permanent Member</h3>
+          <p>You're in for the long haul. Full patch, priority on every ride, club merch, voting rights on routes
+            and events, and a seat at every bonfire.</p>
+          <ul>
+            <li>All group rides, no cap</li>
+            <li>Official club kit &amp; patch</li>
+            <li>Say in club decisions</li>
+            <li>Long-distance tour priority</li>
+          </ul>
+        </div>
+        <div class="membership-card membership-card--alt reveal-up">
+          <span class="membership-card__tag">FOR THE FREE SPIRITS</span>
+          <h3>Casual Rider</h3>
+          <p>Ride when the road calls you. Join weekend runs and open events, no commitment, all the good vibes.</p>
+          <ul>
+            <li>Open invite to public rides</li>
+            <li>Community WhatsApp/Telegram</li>
+            <li>Upgrade to permanent anytime</li>
+            <li>Zero pressure, all throttle</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ride-types">
+        <div class="ride-chip reveal-up">🛣️ Highway Cruises</div>
+        <div class="ride-chip reveal-up">⛰️ Off-Road Adventures</div>
+        <div class="ride-chip reveal-up">🏁 Track Days</div>
+        <div class="ride-chip reveal-up">🌃 City Night Rides</div>
+        <div class="ride-chip reveal-up">🗺️ Long Distance Tours</div>
+        <div class="ride-chip reveal-up">❤️ Charity Rides</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section class="section gallery" id="gallery">
+    <div class="container">
+      <p class="eyebrow reveal-up">FROM THE ROAD</p>
+      <h2 class="section-title reveal-up">Moments <span class="text-accent">In Motion.</span></h2>
+      <p class="section-lead reveal-up">Real photos from the pack land here once we launch &mdash; for now, here's the energy.</p>
+
+      <div class="gallery-grid">
+        <div class="gallery-tile gallery-tile--lg reveal-up" style="--hue:18;">
+          <div class="gallery-tile__art"></div>
+          <div class="gallery-tile__label">Coastal Highway Run</div>
+        </div>
+        <div class="gallery-tile reveal-up" style="--hue:200;">
+          <div class="gallery-tile__art"></div>
+          <div class="gallery-tile__label">Mountain Pass Sunrise</div>
+        </div>
+        <div class="gallery-tile reveal-up" style="--hue:280;">
+          <div class="gallery-tile__art"></div>
+          <div class="gallery-tile__label">Midnight City Run</div>
+        </div>
+        <div class="gallery-tile reveal-up" style="--hue:340;">
+          <div class="gallery-tile__art"></div>
+          <div class="gallery-tile__label">Charity Ride 2025</div>
+        </div>
+        <div class="gallery-tile gallery-tile--lg reveal-up" style="--hue:40;">
+          <div class="gallery-tile__art"></div>
+          <div class="gallery-tile__label">Desert Trail Adventure</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ JOIN FORM ============ -->
+  <section class="section join" id="join">
+    <div class="join__glow"></div>
+    <div class="container join__inner">
+      <div class="join__intro">
+        <p class="eyebrow reveal-up">JOIN THE PACK</p>
+        <h2 class="section-title reveal-up">Throw A Leg Over. <span class="text-accent">Join Us.</span></h2>
+        <p class="section-lead reveal-up">
+          Fill this in and you're on the list. Your details go straight to the club roster &mdash;
+          we'll reach out with the next ride date.
+        </p>
+        <ul class="join__points reveal-up">
+          <li>✅ Takes under a minute</li>
+          <li>✅ No spam, ever</li>
+          <li>✅ Casual or permanent, your call</li>
+        </ul>
+      </div>
+
+      <form class="join__form reveal-up" id="joinForm" novalidate>
+        <div class="form-row">
+          <label for="riderName">Full Name <span class="req">*</span></label>
+          <input type="text" id="riderName" name="name" placeholder="Your name" required autocomplete="name" />
+        </div>
+
+        <div class="form-row form-row--split">
+          <div>
+            <label for="riderEmail">Email <span class="req">*</span></label>
+            <input type="email" id="riderEmail" name="email" placeholder="you@email.com" required autocomplete="email" />
+          </div>
+          <div>
+            <label for="riderMobile">Mobile <span class="optional">(optional)</span></label>
+            <input type="tel" id="riderMobile" name="mobile" placeholder="+91 98765 43210" autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>How do you want to ride? <span class="req">*</span></label>
+          <div class="choice-group" data-name="membershipType">
+            <label class="choice">
+              <input type="radio" name="membershipType" value="Permanent" required />
+              <span>Permanent Member</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="membershipType" value="Casual" />
+              <span>Casual Rider</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row form-row--split">
+          <div>
+            <label for="riderBike">Bike Make &amp; Model <span class="optional">(optional)</span></label>
+            <input type="text" id="riderBike" name="bike" placeholder="e.g. Royal Enfield Himalayan" />
+          </div>
+          <div>
+            <label for="riderExperience">Riding Experience</label>
+            <select id="riderExperience" name="experience">
+              <option value="Beginner">Beginner (0&ndash;1 yr)</option>
+              <option value="Intermediate" selected>Intermediate (1&ndash;5 yrs)</option>
+              <option value="Expert">Expert (5+ yrs)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Preferred ride types <span class="optional">(pick any)</span></label>
+          <div class="chip-select" data-name="rideTypes">
+            <label class="chip-option"><input type="checkbox" name="rideTypes" value="Highway Cruises" /><span>Highway Cruises</span></label>
+            <label class="chip-option"><input type="checkbox" name="rideTypes" value="Off-Road Adventures" /><span>Off-Road Adventures</span></label>
+            <label class="chip-option"><input type="checkbox" name="rideTypes" value="Track Days" /><span>Track Days</span></label>
+            <label class="chip-option"><input type="checkbox" name="rideTypes" value="City Night Rides" /><span>City Night Rides</span></label>
+            <label class="chip-option"><input type="checkbox" name="rideTypes" value="Long Distance Tours" /><span>Long Distance Tours</span></label>
+            <label class="chip-option"><input type="checkbox" name="rideTypes" value="Charity Rides" /><span>Charity Rides</span></label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="riderSource">How did you hear about us? <span class="optional">(optional)</span></label>
+          <select id="riderSource" name="source">
+            <option value="">Select one</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Friend/Referral">Friend / Referral</option>
+            <option value="Another Ride">Met us on a ride</option>
+            <option value="Search">Google Search</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <label class="agree">
+          <input type="checkbox" id="riderAgree" name="agree" required />
+          <span>I'll wear proper safety gear and follow the club's group-ride guidelines. <span class="req">*</span></span>
+        </label>
+
+        <button type="submit" class="btn btn--primary btn--block magnetic" id="joinSubmit">
+          <span class="btn__label">Join The Crew</span>
+          <span class="btn__spinner" aria-hidden="true"></span>
+        </button>
+
+        <p class="join__status" id="joinStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section faq" id="faq">
+    <div class="container container--narrow">
+      <p class="eyebrow reveal-up">QUESTIONS</p>
+      <h2 class="section-title reveal-up">Before You <span class="text-accent">Rev Up.</span></h2>
+
+      <div class="accordion">
+        <div class="accordion-item reveal-up">
+          <button class="accordion-item__head">Do I need my own motorcycle to join? <span>+</span></button>
+          <div class="accordion-item__body"><p>Yes &mdash; you'll need a roadworthy bike and a valid license. Any make or model is welcome, cruisers to adventure bikes.</p></div>
+        </div>
+        <div class="accordion-item reveal-up">
+          <button class="accordion-item__head">Is there a joining fee? <span>+</span></button>
+          <div class="accordion-item__body"><p>Casual riding is free. Permanent membership has a small annual contribution that covers club kit and event costs &mdash; details shared after you apply.</p></div>
+        </div>
+        <div class="accordion-item reveal-up">
+          <button class="accordion-item__head">I'm a beginner rider &mdash; can I still join?</button>
+          <div class="accordion-item__body"><p>Absolutely. We run beginner-friendly rides and pair new riders with experienced members on longer routes.</p></div>
+        </div>
+        <div class="accordion-item reveal-up">
+          <button class="accordion-item__head">Is safety gear mandatory on group rides? <span>+</span></button>
+          <div class="accordion-item__body"><p>Always. Helmet, jacket and gloves are non-negotiable on every official club ride, no exceptions.</p></div>
+        </div>
+        <div class="accordion-item reveal-up">
+          <button class="accordion-item__head">Can I switch from casual to permanent later? <span>+</span></button>
+          <div class="accordion-item__body"><p>Any time &mdash; just reach out to a club admin once you feel at home in the pack.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BANNER ============ -->
+  <section class="cta-banner">
+    <div class="container cta-banner__inner">
+      <h2>The road doesn't wait. <span class="text-accent">Neither should you.</span></h2>
+      <a href="#join" class="btn btn--primary magnetic">Join The Crew &rarr;</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="#top" class="nav__logo">🏍️ APEX<span>RIDERS</span></a>
+      <p>A riding brotherhood built for the road. Group name coming soon &mdash; swap it everywhere it appears.</p>
+    </div>
+    <div class="footer__links">
+      <h4>Explore</h4>
+      <a href="#about">The Club</a>
+      <a href="#rides">Ride Types</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#join">Join The Crew</a>
+    </div>
+    <div class="footer__social">
+      <h4>Follow The Pack</h4>
+      <div class="footer__social-icons">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="YouTube">YT</a>
+        <a href="#" aria-label="WhatsApp">WA</a>
+        <a href="#" aria-label="Strava">ST</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <p>&copy; <span id="year"></span> Apex Riders MC. Ride safe, ride together.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
