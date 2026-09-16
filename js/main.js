@@ -1,11 +1,6 @@
 (function () {
   "use strict";
 
-  var hasGSAP = typeof window.gsap !== "undefined";
-  if (hasGSAP && window.ScrollTrigger) {
-    gsap.registerPlugin(ScrollTrigger);
-  }
-
   /* ---------------------------------------------------------
      PRELOADER
   --------------------------------------------------------- */
@@ -14,7 +9,6 @@
     setTimeout(function () {
       pre.classList.add("is-hidden");
       document.body.classList.add("is-ready");
-      playHeroIntro();
     }, 450);
   });
 
@@ -71,27 +65,7 @@
   });
 
   /* ---------------------------------------------------------
-     HERO INTRO ANIMATION
-  --------------------------------------------------------- */
-  function playHeroIntro() {
-    if (!hasGSAP) {
-      document.querySelectorAll(".hero .reveal-up, .hero .reveal-line span").forEach(function (el) {
-        el.style.opacity = 1; el.style.transform = "none";
-      });
-      document.querySelector(".hero__bike").classList.add("is-riding");
-      return;
-    }
-    var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.from(".hero__eyebrow", { y: 20, opacity: 0, duration: 0.6 })
-      .from(".reveal-line span", { yPercent: 120, opacity: 0, duration: 0.9, stagger: 0.12 }, "-=0.3")
-      .from(".hero__subtitle", { y: 20, opacity: 0, duration: 0.6 }, "-=0.5")
-      .from(".hero__cta", { y: 20, opacity: 0, duration: 0.6 }, "-=0.4")
-      .fromTo(".hero__bike", { x: -60, opacity: 0 }, { x: 300, opacity: 0.9, duration: 1.3, ease: "power2.out" }, "-=0.9")
-      .to(".hero__bike", { x: 340, duration: 20, ease: "none" });
-  }
-
-  /* ---------------------------------------------------------
-     SCROLL REVEAL (IntersectionObserver — no hard GSAP dependency)
+     SCROLL REVEAL (below-the-fold sections only; hero animates via CSS)
   --------------------------------------------------------- */
   var revealEls = document.querySelectorAll(".reveal-up");
   if ("IntersectionObserver" in window) {
