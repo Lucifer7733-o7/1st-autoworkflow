@@ -356,6 +356,17 @@ img{ max-width:100%; display:block; }
   position:absolute; left:18px; bottom:16px; z-index:2; font-weight:700; font-size:0.95rem;
 }
 
+.gallery-tile--drive{
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:10px;
+  padding:22px; border:1px dashed rgba(255,255,255,0.22); background:var(--surface);
+  transition:border-color .3s, background .3s, transform .3s var(--ease);
+}
+.gallery-tile--drive:hover{ border-color:var(--accent); background:var(--surface-2); transform:translateY(-3px); }
+.gallery-tile__drive-icon{ font-size:1.8rem; }
+.gallery-tile__drive-text{ display:flex; flex-direction:column; gap:4px; }
+.gallery-tile__drive-text strong{ font-size:1rem; }
+.gallery-tile__drive-text span{ color:var(--text-dim); font-size:0.85rem; }
+
 /* =========================== JOIN FORM =========================== */
 .join{ background:var(--bg-soft); position:relative; overflow:hidden; }
 .join__glow{
