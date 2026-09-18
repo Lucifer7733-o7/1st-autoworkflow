@@ -1,5 +1,5 @@
 /* =========================================================
-   APEX RIDERS MC — stylesheet
+   THE BIKERS BANDITS — stylesheet
    ========================================================= */
 
 :root{
@@ -143,7 +143,7 @@ img{ max-width:100%; display:block; }
 }
 .nav__logo{
   font-family:'Bebas Neue', sans-serif;
-  font-size:1.5rem; letter-spacing:0.04em;
+  font-size:clamp(1.05rem, 2.6vw, 1.5rem); letter-spacing:0.03em; white-space:nowrap;
   display:flex; align-items:center; gap:8px;
 }
 .nav__logo span{ color:var(--accent); }

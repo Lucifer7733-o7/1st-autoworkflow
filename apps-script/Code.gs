@@ -1,5 +1,5 @@
 /**
- * Apex Riders MC — Join form receiver.
+ * The Bikers Bandits — Join form receiver.
  *
  * Deploy this script as a Web App bound to your Google Sheet.
  * Every form submission is appended as a new row.
@@ -41,7 +41,7 @@ function doPost(e) {
 
 function doGet(e) {
   return ContentService
-    .createTextOutput(JSON.stringify({ status: "Apex Riders MC join-form endpoint is live." }))
+    .createTextOutput(JSON.stringify({ status: "The Bikers Bandits join-form endpoint is live." }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 

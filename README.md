@@ -1,12 +1,8 @@
-# Apex Riders MC — Website
+# The Bikers Bandits — Website
 
-A high-energy, animated landing page for a motorcycle riding group, built to collect
-member sign-ups straight into a Google Sheet. No backend server or build step required —
-it's plain HTML/CSS/JS plus a small Google Apps Script.
-
-> **"Apex Riders MC" is a placeholder name.** Once you share your group's real name,
-> search-and-replace it across `index.html` (nav logo, hero copy, footer) and swap it
-> into the browser tab title.
+A high-energy, animated landing page for The Bikers Bandits motorcycle riding group,
+built to collect member sign-ups straight into a Google Sheet. No backend server or
+build step required — it's plain HTML/CSS/JS plus a small Google Apps Script.
 
 ## What's inside
 
@@ -35,7 +31,7 @@ python3 -m http.server 8080
 
 **a. Create the Sheet**
 1. Go to [sheets.google.com](https://sheets.google.com) and create a new spreadsheet
-   (e.g. "Apex Riders MC — Members").
+   (e.g. "The Bikers Bandits — Members").
 
 **b. Add the Apps Script**
 2. In the Sheet, open **Extensions → Apps Script**.
