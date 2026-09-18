@@ -6,5 +6,5 @@
 // 2. Paste the deployment URL below, between the quotes.
 // ============================================================
 window.SITE_CONFIG = {
-  GOOGLE_SHEET_WEB_APP_URL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE",
+  GOOGLE_SHEET_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbx2EF8vRb-lA62OxcCJi2yOIXGDxfCksfGq6mPWuJ39BDsOln-gL65ljIeg-8LN1DAL0g/exec",
 };
