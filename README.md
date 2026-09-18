@@ -1,6 +1,6 @@
-# The Bandits Riders (TBR) — Website
+# The Bandit Riders (TBR) — Website
 
-A high-energy, animated landing page for The Bandits Riders (TBR) motorcycle riding
+A high-energy, animated landing page for The Bandit Riders (TBR) motorcycle riding
 group, built to collect member sign-ups straight into a Google Sheet. No backend
 server or build step required — it's plain HTML/CSS/JS plus a small Google Apps Script.
 
@@ -31,7 +31,7 @@ python3 -m http.server 8080
 
 **a. Create the Sheet**
 1. Go to [sheets.google.com](https://sheets.google.com) and create a new spreadsheet
-   (e.g. "The Bandits Riders (TBR) — Members").
+   (e.g. "The Bandit Riders (TBR) — Members").
 
 **b. Add the Apps Script**
 2. In the Sheet, open **Extensions → Apps Script**.
