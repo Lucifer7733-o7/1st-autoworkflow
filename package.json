@@ -1,0 +1,14 @@
+{
+  "name": "home-stream",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A personal, self-hosted music streaming app",
+  "workspaces": ["server", "web"],
+  "scripts": {
+    "dev": "npm run dev --workspace server & npm run dev --workspace web",
+    "build": "npm run build --workspace web",
+    "start": "npm start --workspace server",
+    "test": "npm test --workspace server",
+    "sample-music": "npm run sample-music --workspace server"
+  }
+}
